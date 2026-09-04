@@ -1,0 +1,51 @@
+application:
+  subdomain: utopia
+  public_path:
+    - /
+  upstreams:
+    - location: /
+      backend: http://app:1516/
+  health_check:
+    test_url: http://app:1516/api/v1/health
+    timeout: 10s
+    start_period: 90s
+
+services:
+  db:
+    # upstream: pgvector/pgvector:pg16
+    image: docker.1ms.run/pgvector/pgvector:pg16
+    environment:
+      - POSTGRES_USER=utopia
+      - POSTGRES_PASSWORD={{ stable_secret "utopia_db_owner_password" }}
+      - POSTGRES_DB=utopia
+      - UTOPIA_APP_DB_PASSWORD={{ stable_secret "utopia_app_db_password" }}
+    binds:
+      - /lzcapp/var/postgres:/var/lib/postgresql/data
+    setup_script: |
+      cp /lzcapp/pkg/content/docker/init-app-role.sh /docker-entrypoint-initdb.d/10-app-role.sh
+      chmod 0755 /docker-entrypoint-initdb.d/10-app-role.sh
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U utopia -d utopia
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    # upstream: ghcr.io/deeplethe/utopia:0.1.0-rc4
+    image: ghcr.1ms.run/deeplethe/utopia:0.1.0-rc4
+    environment:
+      - UTOPIA_DATABASE_URL=postgres://utopia_app:{{ stable_secret "utopia_app_db_password" }}@db:5432/utopia
+      - UTOPIA_MIGRATION_URL=postgres://utopia:{{ stable_secret "utopia_db_owner_password" }}@db:5432/utopia
+      - UTOPIA_BIND_ADDR=0.0.0.0:1516
+      - UTOPIA_WEB_DIST=/app/web-dist
+      - UTOPIA_DATA_DIR=/app/data
+      - UTOPIA_DB_MAX_CONNECTIONS=32
+      - UTOPIA_OPEN_REGISTRATION=true
+    binds:
+      - /lzcapp/var/data:/app/data
+    depends_on:
+      - db
+
+usage: 首次打开请注册管理员账号，再到系统设置中配置聊天与嵌入模型。数据库与原始文件均保存在应用私有目录；升级前请同时备份数据库和数据目录。

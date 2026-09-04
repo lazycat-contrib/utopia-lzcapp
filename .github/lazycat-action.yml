@@ -1,0 +1,54 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: .lazycat-build/utopia.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: app
+
+build:
+  run_buildscript: false
+
+images:
+  - id: app
+    target: service
+    service: app
+    source: ghcr.io/deeplethe/utopia
+    channel: custom
+    sort: semver
+    tag_regex: '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-rc(0|[1-9][0-9]*))?$'
+    delivery:
+      mode: mirror
+      require_digest_match: true
+
+  - id: db
+    target: service
+    service: db
+    source: pgvector/pgvector
+    channel: custom
+    sort: created
+    tag_regex: '^pg16$'
+    delivery:
+      mode: mirror
+      require_digest_match: true
+
+stores:
+  official:
+    enabled: false
+    continue_if_newer_version: true
+    skip_if_version_exists: false
+    retry:
+      enabled: false
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: Utopia
+    summary: World's first open-source enterprise world model.

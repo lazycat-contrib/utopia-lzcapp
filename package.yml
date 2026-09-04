@@ -1,0 +1,20 @@
+package: community.lazycat.app.utopia
+version: 0.1.0-rc4
+name: Utopia
+description: World's first open-source enterprise world model.
+author: deeplethe
+license: Apache-2.0
+homepage: https://github.com/deeplethe/utopia
+min_os_version: 1.5.0
+
+permissions:
+  required:
+    - net.internet
+
+locales:
+  zh:
+    name: Utopia
+    description: 全球首个开源企业世界模型。
+  en:
+    name: Utopia
+    description: World's first open-source enterprise world model.
