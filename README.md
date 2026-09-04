@@ -24,7 +24,7 @@
 
 `.github/lazycat-action.yml` 管理两个明确的镜像目标：
 
-- `app` 更新 `services.app.image`，并作为应用版本源。标签规则同时接受 RC 和正式版，如 `0.1.0-rc4 → 0.1.0 → 0.1.1-rc1 → 0.1.1`。
+- `app` 更新 `services.app.image`，并作为应用版本源。标签规则同时接受 RC 和正式版，并通过 `{version}` 显式保留完整 RC 后缀，如 `0.1.0-rc4 → 0.1.0 → 0.1.1-rc1 → 0.1.1`。
 - `db` 更新 `services.db.image`，跟踪 PG16 的 `pg16` 标签，并将该非 SemVer 标签映射为 `16.0.0` 供更新检查排序；它不作为应用版本源。
 
 工作流每日检查，也可手动运行。两个镜像均使用 `mirror` 交付：GHCR 通过 `ghcr.1ms.run`，Docker Hub 通过 `docker.1ms.run`。GitHub Action 要求镜像加速器与上游的 Linux amd64 digest 一致，只做读取校验，不复制到 LazyCat Registry。应用只发布到喵喵商店；懒猫官方商店始终关闭。版本数据库迁移只前滚，升级前请备份 PostgreSQL 与 `/lzcapp/var/data`。
