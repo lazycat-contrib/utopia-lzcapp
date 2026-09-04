@@ -36,6 +36,8 @@ images:
     channel: custom
     sort: created
     tag_regex: '^pg16$'
+    version_regex: '^pg(?P<version>(0|[1-9][0-9]*))$'
+    version_template: '{version}.0.0'
     delivery:
       mode: mirror
       require_digest_match: true
