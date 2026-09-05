@@ -9,7 +9,6 @@ application:
     test_url: http://app:1516/api/v1/health
     timeout: 10s
     start_period: 90s
-
 services:
   db:
     # upstream: pgvector/pgvector:pg16
@@ -31,10 +30,9 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
-
   app:
-    # upstream: ghcr.io/deeplethe/utopia:0.1.0-rc4
-    image: ghcr.1ms.run/deeplethe/utopia:0.1.0-rc4
+    # upstream: ghcr.io/deeplethe/utopia:0.1.0-rc5
+    image: ghcr.1ms.run/deeplethe/utopia:0.1.0-rc5
     environment:
       - UTOPIA_DATABASE_URL=postgres://utopia_app:{{ stable_secret "utopia_app_db_password" }}@db:5432/utopia
       - UTOPIA_MIGRATION_URL=postgres://utopia:{{ stable_secret "utopia_db_owner_password" }}@db:5432/utopia
@@ -47,5 +45,4 @@ services:
       - /lzcapp/var/data:/app/data
     depends_on:
       - db
-
 usage: 首次打开请注册管理员账号，再到系统设置中配置聊天与嵌入模型。数据库与原始文件均保存在应用私有目录；升级前请同时备份数据库和数据目录。
