@@ -31,8 +31,8 @@ services:
       timeout: 3s
       retries: 10
   app:
-    # upstream: ghcr.io/deeplethe/utopia:0.1.0-rc5
-    image: ghcr.1ms.run/deeplethe/utopia:0.1.0-rc5
+    # upstream: ghcr.io/deeplethe/utopia:0.1.0-rc6
+    image: ghcr.1ms.run/deeplethe/utopia:0.1.0-rc6
     environment:
       - UTOPIA_DATABASE_URL=postgres://utopia_app:{{ stable_secret "utopia_app_db_password" }}@db:5432/utopia
       - UTOPIA_MIGRATION_URL=postgres://utopia:{{ stable_secret "utopia_db_owner_password" }}@db:5432/utopia
